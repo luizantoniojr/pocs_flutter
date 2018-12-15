@@ -1,2 +1,2 @@
-# pocs_flutter
-Estudos com Flutter
+# Flutter
+Diversos app's utilizando Flutter.
