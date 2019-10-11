@@ -7,8 +7,29 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+  String _search;
+
   Widget _createGifTable(context, snapshot) {
-    return new Container();
+    return GridView.builder(
+        padding: EdgeInsets.all(10.0),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2, crossAxisSpacing: 10.0, mainAxisSpacing: 10.0),
+        itemCount: snapshot.data["data"].length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            child: Image.network(
+              snapshot.data["data"][index]["images"]["fixed_height"]["url"],
+              height: 300.0,
+              fit: BoxFit.cover,
+            ),
+          );
+        });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    GiphyService.getGifs(_search).then((map) => {print(map)});
   }
 
   @override
@@ -25,10 +46,15 @@ class _BodyState extends State<Body> {
             ),
             style: TextStyle(color: Colors.white, fontSize: 18.0),
             textAlign: TextAlign.center,
+            onSubmitted: (text) {
+              setState(() {
+                _search = text;
+              });
+            },
           ),
           Expanded(
             child: FutureBuilder(
-                future: GiphyService.getGigsTrending(),
+                future: GiphyService.getGifs(_search),
                 builder: (context, snapshot) {
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:

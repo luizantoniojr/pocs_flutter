@@ -5,6 +5,13 @@ class GiphyService {
   static String _baseURL = "https://api.giphy.com/v1/gifs";
   static String _apiKey = "hmBN2VqHYwr8CyvNWGVzHf9R9BOyMPf5";
 
+  static Future<Map> getGifs(String search) {
+    if (search == null)
+      return getGifsTrending();
+    else
+      return getGifsBySearch(search);
+  }
+
   static Future<Map> getGifsBySearch(String search) async {
     int offSet = 0;
     var url =
@@ -13,9 +20,8 @@ class GiphyService {
     return json.decode(response.body);
   }
 
-  static Future<Map> getGigsTrending() async {
-    var url =
-        "$_baseURL/trending?api_key=$_apiKey&limit=20&rating=G";
+  static Future<Map> getGifsTrending() async {
+    var url = "$_baseURL/trending?api_key=$_apiKey&limit=20&rating=G";
     var response = await http.get(url);
     return json.decode(response.body);
   }

@@ -7,8 +7,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String _search;
-
   @override
   void initState() {
     super.initState();
