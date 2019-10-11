@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './body.dart';
+import './gif_list.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
       ),
       backgroundColor: Colors.black,
-      body: Body(),
+      body: GifList(),
     );
   }
 }
