@@ -9,20 +9,32 @@ class GifPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_gifData["title"]),
-        backgroundColor: Colors.black,
-        actions: <Widget>[
-          IconButton(icon: Icon(Icons.share),
-          onPressed: () {
-            Share.share(_gifData["images"]["fixed_height"]["url"]);
-          },)
-        ],
-      ),
+      appBar: getAppBar(),
       backgroundColor: Colors.black,
-      body: Center(
-        child: Image.network(_gifData["images"]["fixed_height"]["url"]),
-      ),
+      body: getBody(),
+    );
+  }
+
+  AppBar getAppBar() {
+    return AppBar(
+      title: Text(_gifData["title"]),
+      backgroundColor: Colors.black,
+      actions: <Widget>[getButtonShare()],
+    );
+  }
+
+  Center getBody() {
+    return Center(
+      child: Image.network(_gifData["images"]["fixed_height"]["url"]),
+    );
+  }
+
+  IconButton getButtonShare() {
+    return IconButton(
+      icon: Icon(Icons.share),
+      onPressed: () {
+        Share.share(_gifData["images"]["fixed_height"]["url"]);
+      },
     );
   }
 }

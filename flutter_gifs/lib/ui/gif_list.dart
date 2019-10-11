@@ -13,12 +13,61 @@ class _BodyState extends State<GifList> {
   String _search;
   int _offSet = 0;
 
-  int _getCount(List data) {
-    if (_search == null) {
-      return data.length;
-    } else {
-      return data.length + 1;
-    }
+  @override
+  void initState() {
+    super.initState();
+    GiphyService.getGifs(_search, _offSet).then((map) => {print(map)});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var children2 = <Widget>[
+      TextField(
+        decoration: InputDecoration(
+          labelText: "Pesquise aqui",
+          labelStyle: TextStyle(color: Colors.white),
+          border: OutlineInputBorder(),
+        ),
+        style: TextStyle(color: Colors.white, fontSize: 18.0),
+        textAlign: TextAlign.center,
+        onSubmitted: (text) {
+          setState(() {
+            _search = text;
+            _offSet = 0;
+          });
+        },
+      ),
+      Expanded(
+        child: FutureBuilder(
+            future: GiphyService.getGifs(_search, _offSet),
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                case ConnectionState.none:
+                  return Container(
+                    width: 200.0,
+                    height: 200.0,
+                    alignment: Alignment.center,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      strokeWidth: 5.0,
+                    ),
+                  );
+                default:
+                  if (snapshot.hasError)
+                    return new Container();
+                  else
+                    return _createGifTable(context, snapshot);
+              }
+            }),
+      )
+    ];
+    return Container(
+      padding: EdgeInsets.all(10.0),
+      child: Column(
+        children: children2,
+      ),
+    );
   }
 
   Widget _createGifTable(context, snapshot) {
@@ -30,24 +79,9 @@ class _BodyState extends State<GifList> {
         itemBuilder: (context, index) {
           if (_search == null || index < snapshot.data["data"].length)
             return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            GifPage(snapshot.data["data"][index])));
-              },
-              onLongPress: () {
-                Share.share(snapshot.data["data"][index]["images"]
-                    ["fixed_height"]["url"]);
-              },
-              child: FadeInImage.memoryNetwork(
-                placeholder: kTransparentImage,
-                image: snapshot.data["data"][index]["images"]["fixed_height"]
-                    ["url"],
-                height: 300.0,
-                fit: BoxFit.cover,
-              ),
+              onTap: _navigateToGifPage(context, snapshot, index),
+              onLongPress: _shareGif(snapshot, index),
+              child: _getFadeInImage(snapshot, index),
             );
           else
             return Container(
@@ -72,60 +106,36 @@ class _BodyState extends State<GifList> {
         });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    GiphyService.getGifs(_search, _offSet).then((map) => {print(map)});
+  int _getCount(List data) {
+    if (_search == null) {
+      return data.length;
+    } else {
+      return data.length + 1;
+    }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(10.0),
-      child: Column(
-        children: <Widget>[
-          TextField(
-            decoration: InputDecoration(
-              labelText: "Pesquise aqui",
-              labelStyle: TextStyle(color: Colors.white),
-              border: OutlineInputBorder(),
-            ),
-            style: TextStyle(color: Colors.white, fontSize: 18.0),
-            textAlign: TextAlign.center,
-            onSubmitted: (text) {
-              setState(() {
-                _search = text;
-                _offSet = 0;
-              });
-            },
-          ),
-          Expanded(
-            child: FutureBuilder(
-                future: GiphyService.getGifs(_search, _offSet),
-                builder: (context, snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                    case ConnectionState.none:
-                      return Container(
-                        width: 200.0,
-                        height: 200.0,
-                        alignment: Alignment.center,
-                        child: CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
-                          strokeWidth: 5.0,
-                        ),
-                      );
-                    default:
-                      if (snapshot.hasError)
-                        return new Container();
-                      else
-                        return _createGifTable(context, snapshot);
-                  }
-                }),
-          )
-        ],
-      ),
+  FadeInImage _getFadeInImage(snapshot, int index) {
+    return FadeInImage.memoryNetwork(
+      placeholder: kTransparentImage,
+      image: snapshot.data["data"][index]["images"]["fixed_height"]["url"],
+      height: 300.0,
+      fit: BoxFit.cover,
     );
+  }
+
+  Function _navigateToGifPage(context, snapshot, index) {
+    return () {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => GifPage(snapshot.data["data"][index])));
+    };
+  }
+
+  Function _shareGif(snapshot, index) {
+    return () {
+      Share.share(
+          snapshot.data["data"][index]["images"]["fixed_height"]["url"]);
+    };
   }
 }
