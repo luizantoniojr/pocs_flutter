@@ -30,7 +30,7 @@ class _Result {
   int _vote_count;
   int _id;
   bool _video;
-  var _vote_average;
+  String _vote_average;
   String _title;
   double _popularity;
   String _poster_path;
@@ -81,7 +81,7 @@ class _Result {
 
   String get title => _title;
 
-  double get vote_average => _vote_average;
+  String get vote_average => _vote_average;
 
   bool get video => _video;
 
