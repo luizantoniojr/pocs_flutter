@@ -1,0 +1,3 @@
+[submodule "flutter_movies_bloc_pattern/lib/src/injection/inject.dart"]
+	path = flutter_movies_bloc_pattern/lib/src/injection/inject.dart
+	url = https://github.com/google/inject.dart
