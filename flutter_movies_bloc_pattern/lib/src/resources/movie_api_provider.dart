@@ -7,7 +7,7 @@ import 'package:inject/inject.dart';
 
 class MovieApiProvider {
   final Client client;
-  final _apiKey = 'api-key';
+  final _apiKey = '024a472aaeb432aa1fda5faabafeb48d';
   final _baseUrl = "http://api.themoviedb.org/3/movie";
 
   @provide
@@ -21,10 +21,8 @@ class MovieApiProvider {
       throw Exception('Please add your API key');
     }
     if (response.statusCode == 200) {
-      // If the call to the server was successful, parse the JSON
       return ItemModel.fromJson(json.decode(response.body));
     } else {
-      // If that call was not successful, throw an error.
       throw Exception('Failed to load post');
     }
   }
