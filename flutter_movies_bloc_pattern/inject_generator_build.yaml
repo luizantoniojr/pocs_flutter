@@ -1,3 +1,4 @@
+
 # Read about `build.yaml` at https://pub.dartlang.org/packages/build_config
 builders:
   inject_generator:
@@ -11,4 +12,4 @@ builders:
         - ".inject.summary"
         - ".inject.dart"
     auto_apply: dependents
-    build_to: cache
+    build_to: source
